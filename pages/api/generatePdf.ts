@@ -8,7 +8,6 @@ import {
 } from "@/utils/api";
 import puppeteer from "puppeteer";
 import { APP_SECRET } from "@/utils/env";
-import PDFDocument from "pdfkit";
 
 export default async function handler(
     req: NextApiRequest,
