@@ -1,4 +1,4 @@
-import { StreamDirection } from "@streamflow/stream";
+import { Stream } from "@streamflow/stream";
 
 export type SolanaNetwork = "devnet" | "mainnet-beta";
 
@@ -14,11 +14,14 @@ export type TokenInfo = {
 };
 
 export type StreamStatus = "Scheduled" | "Cancelled" | "Completed";
+export type StreamDirection = "all" | "incoming" | "outgoing";
+export type StreamType = "all" | "stream" | "vesting";
 
 export type ParsedStream = {
     id: string;
     releaseAmount: number;
     releaseFrequency: string;
+    totalAmount: number;
     startTimestamp: number;
     endTimestamp: number;
     senderWallet: string;
@@ -28,5 +31,15 @@ export type ParsedStream = {
     automaticWithdrawal: string;
     status: StreamStatus;
     direction: StreamDirection;
+    type: StreamType;
     tokenInfo: TokenInfo;
+};
+
+export type GetAllStreamsData = {
+    parsedStreams: ParsedStream[];
+    streams: [string, Stream][];
+    wallet?: string;
+    network: SolanaNetwork;
+    direction?: StreamDirection;
+    type?: StreamType;
 };

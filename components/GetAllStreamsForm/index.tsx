@@ -16,29 +16,40 @@ import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getAllStreams } from "@/utils/api/streams";
+import { GetAllStreamsData } from "@/types";
 
-function GetAllStreamsForm() {
+interface Props {
+    setData: (data: GetAllStreamsData) => void;
+    setLoading: (data: boolean) => void;
+}
+
+function GetAllStreamsForm({ setData, setLoading }: Props) {
     const {
         handleSubmit,
-        setValue,
+
         register,
-        reset,
+
         formState: { errors, isSubmitting },
     } = useForm<IGetAllStreamsFormInput>({
         resolver: zodResolver(getAllStreamsFormSchema),
     });
 
     const getAllStreamsHandler = async (values: IGetAllStreamsFormInput) => {
+        setLoading(true);
         try {
-            console.log({ values });
-
             const response = await getAllStreams(values);
-            const result = await response.result;
 
-            console.log({ result });
+            if (!response.success) {
+                throw new Error("Something went wrong while getting streams!");
+            }
+
+            const result: GetAllStreamsData = await response.result;
+
+            setData(result);
         } catch (error) {
             console.error("getAllStreamsHandler =>", error);
         }
+        setLoading(false);
     };
 
     return (

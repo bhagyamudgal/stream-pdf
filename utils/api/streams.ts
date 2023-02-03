@@ -18,3 +18,20 @@ export const getAllStreams = async ({
 
     return result;
 };
+
+export const generatePdf = async ({
+    data,
+    generateSingle,
+}: {
+    data: any;
+    generateSingle: boolean;
+}) => {
+    const response = await apiInstance.post("/generatePdf", {
+        data,
+        generateSingle,
+    });
+
+    const result: ApiResponseType = response.data;
+
+    return result;
+};

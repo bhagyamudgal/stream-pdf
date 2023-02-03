@@ -10,3 +10,7 @@ export const secondsToHms = (seconds: number) => {
 
     return time.trim().replace(/,*$/, "");
 };
+
+export const capitalizeFirstLetter = (value: string) => {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};

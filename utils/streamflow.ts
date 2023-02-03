@@ -8,7 +8,7 @@ import {
 import { secondsToHms } from "./general";
 import { getTokenInfo } from "./shyft";
 import { getConnectionUrl } from "./solana";
-import { ParsedStream, SolanaNetwork, StreamStatus } from "@/types";
+import { ParsedStream, SolanaNetwork, StreamStatus, StreamType } from "@/types";
 
 const getStreamCluster = (network: SolanaNetwork) => {
     if (network === "mainnet-beta") {
@@ -54,9 +54,13 @@ export const getParsedStream = async ({
     );
 
     const releaseFrequency = secondsToHms(data.period);
+    const totalAmount = getNumberFromBN(
+        data.depositedAmount,
+        tokenInfo?.decimals
+    );
 
-    const startTimestamp = data.start;
-    const endTimestamp = data.end;
+    const startTimestamp = data.start * 1000;
+    const endTimestamp = data.end * 1000;
 
     const senderWallet = data.sender;
     const recipientWallet = data.recipient;
@@ -64,11 +68,11 @@ export const getParsedStream = async ({
     let whoCanTransfer = null;
 
     if (data.transferableBySender && data.transferableByRecipient) {
-        whoCanTransfer = `Both (Sender - ${senderWallet} and Recipient - ${recipientWallet})`;
+        whoCanTransfer = `Both Sender & Recipient`;
     } else if (data.transferableBySender) {
-        whoCanTransfer = `Sender - ${senderWallet}`;
+        whoCanTransfer = `Sender`;
     } else if (data.transferableByRecipient) {
-        whoCanTransfer = `Recipient - ${recipientWallet}`;
+        whoCanTransfer = `Recipient`;
     } else {
         whoCanTransfer = "No one";
     }
@@ -76,11 +80,11 @@ export const getParsedStream = async ({
     let whoCanCancel = null;
 
     if (data.cancelableBySender && data.cancelableByRecipient) {
-        whoCanCancel = `Both (Sender - ${senderWallet} and Recipient - ${recipientWallet})`;
+        whoCanCancel = `Both Sender & Recipient`;
     } else if (data.cancelableBySender) {
-        whoCanCancel = `Sender - ${senderWallet}`;
+        whoCanCancel = `Sender`;
     } else if (data.cancelableByRecipient) {
-        whoCanCancel = `Recipient - ${recipientWallet}`;
+        whoCanCancel = `Recipient`;
     } else {
         whoCanCancel = "No one";
     }
@@ -91,7 +95,7 @@ export const getParsedStream = async ({
 
     if (data?.canceledAt) {
         status = "Cancelled";
-    } else if (new Date().getTime() > endTimestamp) {
+    } else if (Date.now() > endTimestamp) {
         status = "Completed";
     } else {
         status = "Scheduled";
@@ -105,10 +109,17 @@ export const getParsedStream = async ({
         direction = StreamDirection.Outgoing;
     }
 
+    let type: StreamType = "stream";
+
+    if (!data.canTopup) {
+        type = "vesting";
+    }
+
     const parsedStream: ParsedStream = {
         id,
         releaseAmount,
         releaseFrequency,
+        totalAmount,
         startTimestamp,
         endTimestamp,
         senderWallet,
@@ -118,6 +129,7 @@ export const getParsedStream = async ({
         automaticWithdrawal,
         status,
         direction,
+        type,
         tokenInfo,
     };
 

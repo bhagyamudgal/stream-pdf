@@ -1,7 +1,5 @@
 import Head from "next/head";
-import GetAllStreamsForm from "@/components/GetAllStreamsForm";
-
-import { useEffect } from "react";
+import GetAllStreamsSection from "@/components/GetAllStreamsSection";
 
 export default function Home() {
     return (
@@ -11,7 +9,7 @@ export default function Home() {
                     Stream PDF | Get Streams Data From streamflow.finance
                 </title>
             </Head>
-            <GetAllStreamsForm />
+            <GetAllStreamsSection />
         </div>
     );
 }
