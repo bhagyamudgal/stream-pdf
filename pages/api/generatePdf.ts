@@ -6,7 +6,8 @@ import {
     handleInvalidRoute,
     successHandler,
 } from "@/utils/api";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chrome from "chrome-aws-lambda";
 import { APP_SECRET } from "@/utils/env";
 
 export default async function handler(
@@ -24,9 +25,16 @@ export default async function handler(
             return handleApiClientError(res);
         }
 
-        const browser = await puppeteer.launch({
-            defaultViewport: { width: 1280, height: 720 },
-        });
+        const browser = await puppeteer.launch(
+            process.env.NODE_ENV === "production"
+                ? {
+                      defaultViewport: { width: 1280, height: 720 },
+                      args: chrome.args,
+                      executablePath: await chrome.executablePath,
+                      headless: chrome.headless,
+                  }
+                : { defaultViewport: { width: 1280, height: 720 } }
+        );
 
         const page = await browser.newPage();
 
