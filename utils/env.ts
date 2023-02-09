@@ -8,4 +8,4 @@ export const SOLANA_DEVNET_RPC_URL =
     process.env.NEXT_PUBLIC_SOLANA_DEVNET_RPC_URL;
 
 // APP Secret
-export const APP_SECRET = process.env.APP_SECRET;
+export const APP_SECRET = process.env.NEXT_PUBLIC_APP_SECRET;

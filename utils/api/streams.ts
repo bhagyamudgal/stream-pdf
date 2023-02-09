@@ -1,5 +1,6 @@
 import { apiInstance, ApiResponseType } from ".";
 import { IGetAllStreamsFormInput } from "@/validators/getAllStreamsValidator";
+import { APP_SECRET } from "../env";
 
 export const getAllStreams = async ({
     wallet,
@@ -26,10 +27,14 @@ export const generatePdf = async ({
     data: any;
     generateSingle: boolean;
 }) => {
-    const response = await apiInstance.post("/generatePdf", {
-        data,
-        generateSingle,
-    });
+    const response = await apiInstance.post(
+        "https://custom-puppeteer-server.onrender.com/generatePdf",
+        {
+            data,
+            generateSingle,
+        },
+        { headers: { Authorization: `${APP_SECRET}` } }
+    );
 
     const result: ApiResponseType = response.data;
 
