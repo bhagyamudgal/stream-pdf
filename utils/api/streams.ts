@@ -28,7 +28,7 @@ export const generatePdf = async ({
     generateSingle: boolean;
 }) => {
     const response = await apiInstance.post(
-        "https://custom-puppeteer-server.onrender.com/generatePdf",
+        "https://custom-puppeteer-server-production.up.railway.app/generatePdf",
         {
             data,
             generateSingle,
