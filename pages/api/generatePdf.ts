@@ -59,7 +59,7 @@ export default async function handler(
         }
 
         const pdf = await page.pdf({
-            format: "A4",
+            format: "a4",
             scale: 0.8,
         });
 
